@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trading Journal & Daily Loss Limit – free Chrome extension</title>
-<meta name="description" content="Free trading journal Chrome extension with a daily loss limit, profit goal and max trades. One-click trade log, position size calculator, full-screen STOP when your limit is hit. No account, no tracking.">
+<title>Trading Journal & Daily Loss Limit – free Chrome extension for prop firm challenges and day trading</title>
+<meta name="description" content="Free trading journal Chrome extension with a daily loss limit, profit goal and max trades. Built for prop firm challenges (FTMO, Topstep, FundedNext): one-click trade log, position size calculator, full-screen STOP before you breach the daily loss rule. No account, no tracking.">
 <link rel="icon" href="img/favicon.png">
-<meta property="og:title" content="Trading Journal & Daily Loss Limit – free Chrome extension">
+<meta property="og:title" content="Trading Journal & Daily Loss Limit – free Chrome extension for prop firm challenges">
 <meta property="og:description" content="Set a daily goal and a loss limit. Log trades in one click. Get a full-screen STOP when the day is done.">
 <meta property="og:image" content="img/shot1-panel.png">
 <style>
@@ -68,7 +68,7 @@
   <section class="hero" style="border-top:0">
     <div>
       <h1 data-i="h1">Set a daily loss limit.<br>Log trades in one click.<br>Stop when it's time.</h1>
-      <p class="lead" data-i="lead">A free Chrome extension that keeps your trading journal and enforces your own rules — daily goal, loss limit, max trades — with a full-screen STOP right over the broker page.</p>
+      <p class="lead" data-i="lead">A free Chrome extension that keeps your trading journal and enforces your own rules — daily goal, loss limit, max trades — with a full-screen STOP right over the broker page. Made for prop firm challenges and anyone who has ever said “just one more trade”.</p>
       <a class="cta" id="cta" href="https://chromewebstore.google.com/detail/eacbknfhlpipmahkgfplifnjcegjmchg" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M6.7 15.4l4.1-7.1M9.9 18.9l4.1-7.1"/></svg>
         <span data-i="cta">Add to Chrome — it's free</span>
@@ -125,6 +125,24 @@
     </div>
   </section>
 
+  <section id="prop">
+    <h2 data-i="ppH">Built for prop firm challenges</h2>
+    <p class="h2sub" data-i="ppP">Most challenges are not lost to the market. They are lost to one bad day that breaks the daily loss rule — and the fee is gone. The extension puts a STOP on the screen before you get there.</p>
+    <div class="grid3">
+      <div class="card"><span class="num">1</span><h3 data-i="pp1h">Copy the firm’s rule</h3><p data-i="pp1p">FTMO, for example, allows a maximum daily loss of 5% of the initial capital. Set your daily loss limit in the extension to 4% — one percent of safety.</p></div>
+      <div class="card"><span class="num">2</span><h3 data-i="pp2h">Log every trade</h3><p data-i="pp2p">One click per trade on the platform page. The extension counts how many losses you can still afford today at your stake.</p></div>
+      <div class="card"><span class="num">3</span><h3 data-i="pp3h">Get stopped before the firm stops you</h3><p data-i="pp3p">Hit your limit — the STOP screen covers the platform. Your challenge survives to tomorrow. Note: firms count open positions too, so keep that extra percent.</p></div>
+    </div>
+    <h3 style="margin-top:26px" data-i="ppRulesH">Daily loss rules of popular firms</h3>
+    <p class="h2sub" data-i="ppRulesP">Rules change — always check the firm’s own page before you set your limit.</p>
+    <div class="grid3" id="firms">
+      <div class="card"><h3>FTMO</h3><p data-i="fFtmo">Max daily loss 5% of initial capital, counted on equity (open positions included), resets at midnight CE(S)T.</p><p style="margin-top:8px"><a href="https://ftmo.com/en/trading-objectives/" target="_blank" rel="noopener" data-i="fRules">Official rules →</a></p></div>
+      <div class="card"><h3>Topstep</h3><p data-i="fTopstep">Daily loss limit in dollars, depends on account size; breaching it ends the day (or the account, depending on the plan).</p><p style="margin-top:8px"><a href="https://www.topstep.com/blog/the-value-of-setting-a-daily-loss-limit" target="_blank" rel="noopener" data-i="fRules2">Official rules →</a></p></div>
+      <div class="card"><h3>FundedNext</h3><p data-i="fFn">Daily loss limit as a percentage of the account, counted on balance or equity depending on the plan.</p><p style="margin-top:8px"><a href="https://fundednext.com/cfds-glossary/daily-loss-limit" target="_blank" rel="noopener" data-i="fRules3">Official rules →</a></p></div>
+    </div>
+    <p class="note" data-i="ppNote">The extension is not affiliated with any prop firm and does not connect to their platforms. It is a discipline tool that runs in your browser.</p>
+  </section>
+
   <section class="two">
     <div>
       <h2 data-i="whoH">Who it's for</h2>
@@ -141,6 +159,7 @@
     <details><summary data-i="q1">Does it work with my broker?</summary><p data-i="a1">Yes — with any web platform. You enable the panel on a site with one click; the extension does not need to know your broker. Automatic trade detection for popular platforms is coming later.</p></details>
     <details><summary data-i="q2">Can I turn the STOP off?</summary><p data-i="a2">You can hold a button for three seconds to override it. We don't recommend it, and the day is marked as "overridden" in your history. A lock you can't override is planned.</p></details>
     <details><summary data-i="q3">Is it really free?</summary><p data-i="a3">Yes, everything in the extension today is free with no limits. Paid extras (auto-detection, weekly stats, sync) may come later; the core will stay free.</p></details>
+    <details><summary data-i="q5">Does it work for FTMO / Topstep / FundedNext challenges?</summary><p data-i="a5">Yes — it works on any web platform, including the ones prop firms use. Set your daily loss limit a little below the firm’s rule (the firm also counts open positions), log each trade, and the STOP screen will stop you before the rule does.</p></details>
     <details><summary data-i="q4">Where is my data?</summary><p data-i="a4">Only in your browser (chrome.storage.local). Nothing is sent anywhere. You can export to CSV or delete everything from the History page.</p></details>
   </section>
 
@@ -157,7 +176,7 @@ const T = {
   ru: {
     brand: 'Дневник сделок и дневной лимит',
     h1: 'Поставь дневной лимит убытка.<br>Отмечай сделки одним кликом.<br>Остановись вовремя.',
-    lead: 'Бесплатное расширение для Chrome: ведёт дневник сделок и заставляет соблюдать твои же правила — цель дня, стоп дня, лимит сделок — экраном СТОП прямо поверх страницы брокера.',
+    lead: 'Бесплатное расширение для Chrome: ведёт дневник сделок и заставляет соблюдать твои же правила — цель дня, стоп дня, лимит сделок — экраном СТОП прямо поверх страницы брокера. Сделано для челленджей проп-фирм и для всех, кто хоть раз говорил «ещё одну сделку».',
     cta: 'Добавить в Chrome — бесплатно', cta2: 'Добавить в Chrome — бесплатно',
     sub: 'Без регистрации. Без серверов. Дневник хранится в твоём браузере.',
     whyH: 'Трейдеры сливают не рынку. Они сливают одному плохому дню.',
@@ -177,6 +196,16 @@ const T = {
     q2: 'Можно выключить СТОП?', a2: 'Можно, удерживая кнопку три секунды. Не рекомендуем, и день помечается в истории как «лимит снят». Замок без снятия — в планах.',
     q3: 'Правда бесплатно?', a3: 'Да, всё, что есть сейчас, бесплатно и без лимитов. Платные дополнения (автоопределение, недельная статистика, синхронизация) возможны позже; ядро останется бесплатным.',
     q4: 'Где мои данные?', a4: 'Только в твоём браузере. Ничего никуда не отправляется. Можно выгрузить в CSV или удалить всё на странице истории.',
+    ppH: 'Сделано для челленджей проп-фирм', ppP: 'Большинство челленджей сливают не рынку. Их сливают одному плохому дню, который нарушает правило дневного убытка, — и деньги за экзамен сгорают. Расширение ставит СТОП на экран раньше.',
+    pp1h: 'Скопируй правило фирмы', pp1p: 'Например, FTMO разрешает дневной убыток не больше 5% от стартового капитала. Поставь в расширении стоп дня 4% — один процент запаса.',
+    pp2h: 'Отмечай каждую сделку', pp2p: 'Один клик на сделку прямо на странице платформы. Расширение считает, сколько минусов ещё можно позволить сегодня при твоей ставке.',
+    pp3h: 'Остановись раньше, чем остановит фирма', pp3p: 'Дошёл до лимита — экран СТОП закрывает платформу. Челлендж доживает до завтра. Помни: фирмы считают и открытые позиции, поэтому запас нужен.',
+    ppRulesH: 'Правила дневного убытка у популярных фирм', ppRulesP: 'Правила меняются — всегда проверяй на странице фирмы, прежде чем ставить лимит.',
+    fFtmo: 'Дневной убыток не больше 5% от стартового капитала, считается по эквити (с открытыми позициями), обнуляется в полночь по CE(S)T.', fRules: 'Официальные правила →', fRules2: 'Официальные правила →', fRules3: 'Официальные правила →',
+    fTopstep: 'Дневной лимит убытка в долларах, зависит от размера счёта; нарушение закрывает день (или счёт — зависит от тарифа).',
+    fFn: 'Дневной лимит убытка в процентах от счёта, считается по балансу или эквити в зависимости от тарифа.',
+    ppNote: 'Расширение не связано ни с одной проп-фирмой и не подключается к их платформам. Это инструмент дисциплины, который работает у тебя в браузере.',
+    q5: 'Подходит для челленджей FTMO / Topstep / FundedNext?', a5: 'Да — работает на любой веб-платформе, включая те, что используют проп-фирмы. Поставь стоп дня чуть ниже правила фирмы (фирма считает и открытые позиции), отмечай сделки, и экран СТОП остановит тебя раньше, чем правило.',
     fPriv: 'Политика конфиденциальности', fContact: 'Связаться', fDisc: 'Не финансовый совет. Инструмент дисциплины и учёта.',
   }
 };
