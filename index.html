@@ -6,211 +6,349 @@
 <title>Trading Journal & Daily Loss Limit – free Chrome extension for prop firm challenges and day trading</title>
 <meta name="description" content="Free trading journal Chrome extension with a daily loss limit, profit goal and max trades. Built for prop firm challenges (FTMO, Topstep, FundedNext): one-click trade log, position size calculator, full-screen STOP before you breach the daily loss rule. No account, no tracking.">
 <link rel="icon" href="img/favicon.png">
+<link rel="canonical" href="https://nickyredliss.github.io/trading-journal/">
 <meta property="og:title" content="Trading Journal & Daily Loss Limit – free Chrome extension for prop firm challenges">
 <meta property="og:description" content="Set a daily goal and a loss limit. Log trades in one click. Get a full-screen STOP when the day is done.">
-<meta property="og:image" content="img/shot1-panel.png">
+<meta property="og:image" content="https://nickyredliss.github.io/trading-journal/img/shot2-stop.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap">
 <style>
-  :root { --bg:#0b0e14; --card:#111827; --line:#1f2937; --ink:#f8fafc; --mute:#94a3b8; --ok:#22c55e; --bad:#ef4444; --amber:#f59e0b; --blue:#3b82f6; }
+  :root { --bg:#0e0f12; --panel:#15171c; --panel2:#111216; --line:#25272d; --ink:#f4f1ea; --mute:#b5b2a8; --soft:#7a786f; --acc:#f5b301; --accink:#1a1200; --acc2:#3d2e00; --win:#22c55e; --loss:#ef4444; }
   * { box-sizing:border-box; }
   html { scroll-behavior:smooth; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-  a { color:inherit; }
-  .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
-  header { display:flex; align-items:center; gap:12px; padding:18px 0; }
-  header img { width:32px; height:32px; border-radius:8px; }
-  header b { font-size:15px; }
-  header .sp { flex:1; }
-  .lang { display:flex; gap:4px; border:1px solid var(--line); border-radius:8px; padding:2px; }
-  .lang button { background:none; border:0; color:var(--mute); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:13px; }
+  body { margin:0; overflow-x:hidden; background:var(--bg); color:var(--ink); font:16px/1.5 "Archivo","Helvetica Neue",Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:var(--acc); text-decoration:none; } a:hover { color:#ffc93d; }
+  .display { font-family:"Anton",Impact,"Arial Narrow",sans-serif; font-weight:400; letter-spacing:.005em; text-transform:uppercase; }
+  .cap { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); font-weight:600; }
+  .cap.acc { color:var(--acc); }
+  .wrap { max-width:1296px; margin:0 auto; padding:0 24px; }
+  nav { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:28px 0 0; }
+  .brand { display:flex; align-items:center; gap:12px; font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); }
+  .links { display:flex; align-items:center; gap:24px; font-size:13px; letter-spacing:.1em; text-transform:uppercase; }
+  .links a { color:var(--mute); } .links a:hover { color:var(--ink); }
+  .outline { padding:12px 20px; border:1.5px solid var(--ink); border-radius:4px; color:var(--ink) !important; font-weight:600; }
+  .lang { display:flex; gap:2px; border:1px solid var(--line); border-radius:4px; padding:2px; }
+  .lang button { background:none; border:0; color:var(--soft); padding:5px 10px; border-radius:3px; cursor:pointer; font:inherit; font-size:12px; letter-spacing:.1em; }
   .lang button.on { background:var(--line); color:var(--ink); }
-  .hero { display:grid; grid-template-columns:1.1fr 1fr; gap:36px; align-items:center; padding:36px 0 30px; }
-  h1 { font-size:44px; line-height:1.1; margin:0 0 16px; letter-spacing:-.5px; }
-  .lead { font-size:19px; color:var(--mute); margin:0 0 26px; }
-  .cta { display:inline-flex; align-items:center; gap:10px; background:var(--ok); color:#052e16; font-weight:700; padding:14px 22px; border-radius:12px; text-decoration:none; font-size:17px; }
-  .cta:hover { filter:brightness(1.08); }
-  .cta svg { width:22px; height:22px; }
-  .sub { font-size:13px; color:var(--mute); margin-top:12px; }
-  .shot { border-radius:14px; border:1px solid var(--line); box-shadow:0 20px 60px rgba(0,0,0,.5); width:100%; }
-  section { padding:34px 0; border-top:1px solid var(--line); }
-  h2 { font-size:28px; margin:0 0 8px; }
-  .h2sub { color:var(--mute); margin:0 0 22px; }
-  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; }
-  .card h3 { margin:0 0 8px; font-size:17px; }
-  .card p { margin:0; color:var(--mute); font-size:15px; }
-  .num { display:inline-block; width:28px; height:28px; border-radius:50%; background:var(--line); text-align:center; line-height:28px; font-weight:700; margin-bottom:10px; }
-  .two { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center; }
+  .cta { display:inline-flex; align-items:center; gap:12px; padding:20px 30px; border-radius:4px; background:var(--acc); color:var(--accink) !important; font-size:15px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; transition:filter .15s, transform .15s; }
+  .cta:hover { filter:brightness(1.08); transform:translateY(-1px); }
+  .cta svg { width:20px; height:20px; flex:none; }
+  /* hero */
+  .hero { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:48px; align-items:end; padding:40px 0 64px; }
+  .hero-l { display:flex; flex-direction:column; gap:28px; }
+  h1 { margin:0; font-size:clamp(46px,12vw,176px); line-height:.9; overflow-wrap:anywhere; }
+  h1 span { color:var(--acc); }
+  .lead { margin:0; font-size:22px; line-height:1.4; color:var(--mute); max-width:600px; text-wrap:pretty; }
+  .cta-row { display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+  .stage { position:relative; height:560px; }
+  .stopmock { position:absolute; left:0; top:0; width:100%; height:470px; border-radius:10px; background:#0f172a; border:1px solid #2a2c33; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+  .stopmock::before { content:""; position:absolute; inset:0; opacity:.35; background-image:linear-gradient(#20242c 1px,transparent 1px),linear-gradient(90deg,#20242c 1px,transparent 1px); background-size:40px 40px; }
+  .stopmock .in { position:relative; text-align:center; padding:30px; max-width:440px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .stopmock .t { font-size:64px; line-height:1; }
+  .stopmock .s { font-size:17px; color:#cbd5e1; }
+  .stopmock .n { font-size:14px; color:#94a3b8; margin-top:10px; }
+  .stopmock .close { margin-top:18px; padding:13px 22px; border-radius:10px; background:var(--win); color:#fff; font-size:15px; font-weight:700; }
+  .stopmock .hold { margin-top:14px; padding:10px 16px; border-radius:10px; border:1px solid #475569; color:#94a3b8; font-size:12px; }
+  .panel { position:absolute; right:24px; bottom:0; width:260px; border-radius:14px; background:var(--panel); color:var(--ink); box-shadow:0 8px 30px rgba(0,0,0,.6); border:1px solid var(--line); padding:10px 12px; font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .panel .h { display:flex; align-items:center; gap:8px; font-weight:700; }
+  .panel .pnl { font-size:22px; font-weight:700; color:var(--win); }
+  .panel .pnl small { font-size:13px; color:var(--soft); font-weight:400; }
+  .panel .bar { height:6px; border-radius:3px; background:linear-gradient(90deg,var(--loss) 0,#334155 50%,var(--win) 100%); position:relative; margin:6px 0 2px; }
+  .panel .bar i { position:absolute; top:-3px; left:82%; width:12px; height:12px; border-radius:50%; background:#fff; transform:translateX(-50%); }
+  .panel .m { display:flex; justify-content:space-between; color:var(--soft); font-size:12px; }
+  .panel .m b { color:var(--ink); }
+  .panel .inp { padding:7px 8px; border-radius:8px; border:1px solid var(--line); background:var(--bg); }
+  .panel .b { display:flex; gap:6px; } .panel .b span { flex:1; padding:9px 6px; border-radius:9px; color:#fff; font-weight:700; text-align:center; }
+  .panel .w { background:var(--win); } .panel .l { background:var(--loss); }
+  .panel .hint { font-size:11px; color:var(--soft); text-align:center; }
+  /* strip */
+  .strip { border-top:1px solid var(--line); border-bottom:1px solid var(--line); display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .strip > div { padding:26px 24px; border-right:1px solid var(--line); }
+  .strip > div:first-child { padding-left:0; } .strip > div:last-child { border-right:0; padding-right:0; }
+  .strip .big { font-size:44px; line-height:1; } .strip .big.acc { color:var(--acc); }
+  .strip .cap { margin-top:8px; }
+  /* sections */
+  section { padding:80px 0; border-top:1px solid var(--line); }
+  section.first { border-top:0; padding-top:88px; }
+  h2 { margin:0; font-size:clamp(38px,6vw,88px); line-height:.92; overflow-wrap:anywhere; }
+  h2 span { color:var(--acc); }
+  .h2sub { margin:0; font-size:19px; line-height:1.5; color:var(--mute); text-wrap:pretty; }
+  .head2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:48px; align-items:end; margin-bottom:36px; }
+  .g3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .g3 + .g3 { margin-top:20px; }
+  .box { padding:26px; border:1px solid var(--line); border-radius:6px; display:flex; flex-direction:column; gap:10px; }
+  .box .h { font-size:22px; font-weight:700; } .box p { margin:0; font-size:15px; line-height:1.5; color:var(--mute); }
+  .firm { padding:22px 26px; background:var(--panel); border-radius:6px; display:flex; flex-direction:column; gap:8px; }
+  .firm .n { font-size:28px; } .firm p { margin:0; font-size:14px; line-height:1.5; color:var(--mute); }
+  .firm a { font-size:13px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; }
+  .note { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); font-weight:600; margin-top:28px; }
   /* calculator */
-  .calc { display:grid; grid-template-columns:1fr 1.2fr; gap:24px; }
-  .calc label { display:block; font-size:13px; color:var(--mute); margin:10px 0 4px; }
-  .calc input, .calc select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0f172a; color:var(--ink); font-size:16px; }
-  .res { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; }
-  .res .big { font-size:34px; font-weight:800; }
-  .res .row { display:flex; justify-content:space-between; padding:9px 0; border-top:1px solid var(--line); font-size:15px; }
-  .res .row:first-of-type { border-top:0; }
-  .res .row b { font-size:16px; }
-  .pos { color:var(--ok); } .neg { color:var(--bad); }
-  .faq details { border-top:1px solid var(--line); padding:12px 0; }
-  .faq summary { cursor:pointer; font-weight:600; }
-  .faq p { color:var(--mute); margin:8px 0 0; }
-  footer { border-top:1px solid var(--line); padding:26px 0 40px; color:var(--mute); font-size:13px; display:flex; gap:18px; flex-wrap:wrap; }
-  .note { font-size:13px; color:var(--mute); margin-top:14px; }
-  @media (max-width:800px) { .hero, .two, .calc, .grid3 { grid-template-columns:1fr; } h1 { font-size:34px; } }
+  .calc { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:64px; align-items:center; }
+  .calc-l { display:flex; flex-direction:column; gap:22px; }
+  .calc-l p { margin:0; font-size:18px; line-height:1.5; color:var(--mute); }
+  .fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .fields label { display:block; }
+  .fields .cap { display:block; margin-bottom:8px; }
+  .fields input, .fields select { width:100%; padding:14px 16px; border:1px solid #34342f; border-radius:4px; background:transparent; color:var(--ink); font:inherit; font-size:20px; font-weight:600; }
+  .fields select { font-size:15px; font-weight:500; background:var(--bg); }
+  .fields .full { grid-column:1/-1; }
+  .res { background:var(--acc); color:var(--accink); border-radius:6px; padding:40px 44px; display:flex; flex-direction:column; gap:4px; }
+  .res .cap { color:var(--acc2); }
+  .res .big { font-size:clamp(80px,10vw,128px); line-height:.95; }
+  .res .rows { display:flex; flex-direction:column; margin-top:18px; font-size:17px; }
+  .res .r { display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid rgba(13,13,12,.25); }
+  .res .r b { white-space:nowrap; }
+  .res .foot { font-size:13px; color:var(--acc2); margin-top:14px; }
+  /* journal */
+  .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:64px; align-items:center; }
+  .two .txt { display:flex; flex-direction:column; gap:24px; }
+  .two .txt p { margin:0; font-size:18px; line-height:1.5; color:var(--mute); }
+  .jmock { border:1px solid var(--line); border-radius:6px; padding:24px; display:flex; flex-direction:column; gap:14px; background:var(--panel2); }
+  .tiles { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+  .tile { padding:14px; background:var(--panel); border-radius:4px; } .tile .v { font-size:30px; margin-top:4px; }
+  .tbl { display:flex; flex-direction:column; font-size:13px; color:var(--mute); }
+  .tbl > div { display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; padding:10px 0; border-bottom:1px solid #1c1c1a; }
+  .tbl > div.hd { padding:8px 0; border-bottom:1px solid var(--line); }
+  .tbl > div:last-child { border-bottom:0; }
+  .pos { color:var(--win); } .neg { color:var(--loss); }
+  .who { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:40px; }
+  .who p { margin:12px 0 0; font-size:17px; line-height:1.5; color:var(--mute); }
+  /* faq */
+  .faq { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr); gap:64px; align-items:start; }
+  .faq details { border-top:1px solid var(--line); padding:20px 0; }
+  .faq summary { cursor:pointer; font-size:18px; font-weight:700; list-style:none; display:flex; justify-content:space-between; gap:16px; }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary::after { content:"+"; color:var(--acc); font-size:22px; line-height:1; }
+  .faq details[open] summary::after { content:"–"; }
+  .faq p { margin:8px 0 0; font-size:16px; line-height:1.5; color:var(--mute); }
+  .final { display:flex; flex-direction:column; align-items:center; gap:26px; text-align:center; padding:88px 0 40px; }
+  .final h2 { font-size:clamp(56px,8vw,120px); line-height:.9; }
+  footer { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:24px 0 40px; }
+  footer, footer a { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); font-weight:600; }
+  footer .l { display:flex; gap:24px; flex-wrap:wrap; }
+  @media (max-width:960px) {
+    .hero { grid-template-columns:1fr; gap:40px; padding:40px 0 48px; }
+    .stage { height:auto; display:flex; flex-direction:column; gap:16px; }
+    .stopmock, .panel { position:static; width:100%; height:auto; padding:24px 0; }
+    .panel { max-width:300px; padding:10px 12px; }
+    .strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .strip > div { padding:20px 16px 20px 0 !important; border-right:0; border-bottom:1px solid var(--line); }
+    .head2, .g3, .calc, .two, .who, .faq { grid-template-columns:1fr; gap:24px; }
+    .links .hide { display:none; }
+    .res { padding:28px 24px; }
+    .tiles { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .strip .big { font-size:32px; }
+    .final h2 { font-size:clamp(44px,12vw,120px); }
+    .res .big { font-size:72px; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <img src="img/icon.png" alt=""><b data-i="brand">Trading Journal & Daily Loss Limit</b><span class="sp"></span>
-    <div class="lang"><button data-lang="en" class="on">EN</button><button data-lang="ru">RU</button></div>
-  </header>
-
-  <section class="hero" style="border-top:0">
-    <div>
-      <h1 data-i="h1">Set a daily loss limit.<br>Log trades in one click.<br>Stop when it's time.</h1>
-      <p class="lead" data-i="lead">A free Chrome extension that keeps your trading journal and enforces your own rules — daily goal, loss limit, max trades — with a full-screen STOP right over the broker page. Made for prop firm challenges and anyone who has ever said “just one more trade”.</p>
-      <a class="cta" id="cta" href="https://chromewebstore.google.com/detail/eacbknfhlpipmahkgfplifnjcegjmchg" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M6.7 15.4l4.1-7.1M9.9 18.9l4.1-7.1"/></svg>
-        <span data-i="cta">Add to Chrome — it's free</span>
-      </a>
-      <div class="sub" data-i="sub">No account. No servers. Your journal stays in your browser.</div>
+  <nav>
+    <a class="brand" href="#">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#f5b301"/><path d="M7 19 12 13l4 4 5-8" stroke="#1a1200" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i="brand">Trading Journal &amp; Daily Loss Limit</span>
+    </a>
+    <div class="links">
+      <a class="hide" href="#prop" data-i="nProp">Prop firms</a>
+      <a class="hide" href="#calculator" data-i="nCalc">Calculator</a>
+      <a class="hide" href="#faq">FAQ</a>
+      <div class="lang"><button data-lang="en" class="on">EN</button><button data-lang="ru">RU</button></div>
+      <a class="outline hide" href="https://chromewebstore.google.com/detail/eacbknfhlpipmahkgfplifnjcegjmchg" target="_blank" rel="noopener" data-i="nAdd">Add to Chrome</a>
     </div>
-    <img class="shot" src="img/shot1-panel.png" alt="Trading journal panel over a broker page">
-  </section>
+  </nav>
 
-  <section>
-    <h2 data-i="whyH">Most traders don't lose to the market. They lose to one bad day.</h2>
-    <p class="h2sub" data-i="whyP">A losing streak you try to win back. A winning streak that turns into overtrading. The fix is not a better strategy — it's rules you can't talk yourself out of.</p>
-    <div class="grid3">
-      <div class="card"><span class="num">1</span><h3 data-i="s1h">Set your rules once</h3><p data-i="s1p">Bank, daily profit goal, daily loss limit, max trades per day, risk per trade. Fixed-payout or P&amp;L mode.</p></div>
-      <div class="card"><span class="num">2</span><h3 data-i="s2h">Log trades in one click</h3><p data-i="s2p">+ Win / − Loss right on the broker page. The extension sizes your next trade and counts losses left before the limit.</p></div>
-      <div class="card"><span class="num">3</span><h3 data-i="s3h">Get stopped when the day is done</h3><p data-i="s3p">Goal reached, limit hit or max trades — a full-screen STOP covers the broker. Close the tab. Come back tomorrow.</p></div>
+  <div class="hero">
+    <div class="hero-l">
+      <h1 class="display" data-i="h1">Know when<br>to <span>stop.</span></h1>
+      <p class="lead" data-i="lead">A free Chrome extension that keeps your trading journal and enforces your own rules — daily loss limit, profit goal, max trades — with a full-screen STOP over the broker page. Made for prop firm challenges.</p>
+      <div class="cta-row">
+        <a class="cta" href="https://chromewebstore.google.com/detail/eacbknfhlpipmahkgfplifnjcegjmchg" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M6.7 15.4l4.1-7.1M9.9 18.9l4.1-7.1"/></svg>
+          <span data-i="cta">Add to Chrome — free</span>
+        </a>
+        <span class="cap" data-i="ctaNote">No account · no servers · EN / RU</span>
+      </div>
     </div>
-  </section>
+    <div class="stage" aria-hidden="true">
+      <div class="stopmock">
+        <div class="in">
+          <div class="display t" data-i="mStop">Stop.</div>
+          <div class="s" data-i="mStopS">That’s it for today. You hit your daily loss limit. Tomorrow is a new day.</div>
+          <div class="n"><span data-i="mPnl">P&amp;L</span>: <b class="neg">−$96 (−9.6%)</b> · <span data-i="mTrades">Trades</span>: <b style="color:#fff">7</b> · <span data-i="mBank">Bank</span>: <b style="color:#fff">$904</b></div>
+          <div class="close" data-i="mClose">Close this tab</div>
+          <div class="hold" data-i="mHold">Hold 3 s to override (not recommended)</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="h"><svg width="18" height="18" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#f5b301"/><path d="M7 19 12 13l4 4 5-8" stroke="#1a1200" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i="mToday">Today</span><span style="flex:1"></span><span style="color:var(--soft)">—</span></div>
+        <div class="pnl">+$64 <small>(+6.4%)</small></div>
+        <div class="bar"><i></i></div>
+        <div class="m"><span><span data-i="mTrades2">Trades</span>: <b>4 / 10</b></span><span><span data-i="mNext">Next trade</span>: <b>$30</b></span></div>
+        <div class="inp">30</div>
+        <div class="b"><span class="w" data-i="mWin">+ Win</span><span class="l" data-i="mLoss">− Loss</span></div>
+        <div class="hint" data-i="mHint">2 wins to goal · 3 losses left</div>
+      </div>
+    </div>
+  </div>
 
-  <section class="two">
-    <img class="shot" src="img/shot2-stop.png" alt="Full-screen STOP screen">
-    <div>
-      <h2 data-i="stopH">The STOP screen</h2>
-      <p class="h2sub" data-i="stopP">When you hit your goal or your loss limit, the broker page is covered and the buttons are gone. You can override it by holding a button for three seconds — and that day gets marked in your history, so you see how often you broke your own rule.</p>
-      <h2 data-i="jH">Journal &amp; stats</h2>
-      <p class="h2sub" data-i="jP">Every trade with time, stake, result and a note. Profit days vs loss days, win rate, per-day P&amp;L. Export to CSV. Balance carries over automatically.</p>
+  <div class="strip">
+    <div><div class="display big acc">5%</div><div class="cap" data-i="st1">FTMO’s daily loss rule — one bad day ends the challenge</div></div>
+    <div><div class="display big" data-i="st2b">1 click</div><div class="cap" data-i="st2">per trade, right on the platform page</div></div>
+    <div><div class="display big" data-i="st3b">0 bytes</div><div class="cap" data-i="st3">sent anywhere — the journal stays in your browser</div></div>
+    <div><div class="display big" data-i="st4b">Any broker</div><div class="cap" data-i="st4">works on every web platform, incl. prop-firm ones</div></div>
+  </div>
+
+  <section class="first" id="prop">
+    <div class="head2">
+      <h2 class="display" data-i="ppH">Challenges aren’t lost to the market.<br><span>They’re lost to one day.</span></h2>
+      <p class="h2sub" data-i="ppP">Every prop firm has a daily loss rule. Break it by a dollar and the account — and the fee — is gone. Set the same limit in the extension, a point below the firm’s, and the STOP screen covers the platform before the rule does.</p>
     </div>
+    <div class="g3">
+      <div class="box"><div class="cap acc" data-i="step1">Step 1</div><div class="h" data-i="pp1h">Copy the firm’s rule</div><p data-i="pp1p">FTMO allows a 5% daily loss. Set the extension to 4% — one point of safety, because firms count open positions too.</p></div>
+      <div class="box"><div class="cap acc" data-i="step2">Step 2</div><div class="h" data-i="pp2h">Log every trade</div><p data-i="pp2p">+ Win / − Loss on the floating panel. It counts how many losses you can still afford today at your stake.</p></div>
+      <div class="box"><div class="cap acc" data-i="step3">Step 3</div><div class="h" data-i="pp3h">Get stopped first</div><p data-i="pp3p">Limit hit — STOP covers the platform, the buttons are gone. Your challenge survives to tomorrow.</p></div>
+    </div>
+    <div class="g3" id="firms">
+      <div class="firm"><div class="display n">FTMO</div><p data-i="fFtmo">Max daily loss 5% of initial capital, counted on equity (open positions included), resets at midnight CE(S)T.</p><a href="https://ftmo.com/en/trading-objectives/" target="_blank" rel="noopener" data-i="fRules">Official rules →</a></div>
+      <div class="firm"><div class="display n">Topstep</div><p data-i="fTopstep">Daily loss limit in dollars, depends on account size; breaching it ends the day or the account, depending on the plan.</p><a href="https://www.topstep.com/blog/the-value-of-setting-a-daily-loss-limit" target="_blank" rel="noopener" data-i="fRules2">Official rules →</a></div>
+      <div class="firm"><div class="display n">FundedNext</div><p data-i="fFn">Daily loss limit as a percentage of the account, on balance or equity depending on the plan.</p><a href="https://fundednext.com/cfds-glossary/daily-loss-limit" target="_blank" rel="noopener" data-i="fRules3">Official rules →</a></div>
+    </div>
+    <div class="note" data-i="ppNote">Rules change — check the firm’s page before you set your limit. Not affiliated with any prop firm.</div>
   </section>
 
   <section id="calculator">
-    <h2 data-i="cH">Position size &amp; daily limit calculator</h2>
-    <p class="h2sub" data-i="cP">Free, works without the extension. Enter your bank and rules — get your stake, how many losses you can afford today and how many wins you need.</p>
     <div class="calc">
-      <div>
-        <label data-i="lBank">Bank (balance)</label><input id="c_bank" type="number" value="1000" min="0">
-        <label data-i="lRisk">Risk per trade, %</label><input id="c_risk" type="number" value="3" step="0.5" min="0.1">
-        <label data-i="lGoal">Daily profit goal, %</label><input id="c_goal" type="number" value="10" min="0">
-        <label data-i="lStop">Daily loss limit, %</label><input id="c_stop" type="number" value="10" min="0">
-        <label data-i="lMode">Trade type</label>
-        <select id="c_mode"><option value="binary" data-i="oBinary">Fixed payout (options)</option><option value="pnl" data-i="oPnl">P&amp;L amount (forex / crypto / stocks)</option></select>
-        <div id="payoutWrap"><label data-i="lPayout">Payout, %</label><input id="c_payout" type="number" value="80" min="1"></div>
+      <div class="calc-l">
+        <div class="cap acc" data-i="cE">Free tool · works without the extension</div>
+        <h2 class="display" data-i="cH">Position size &amp; daily limit</h2>
+        <p data-i="cP">Enter your bank and rules — get your stake, how many losses you can afford today and how many wins you need.</p>
+        <div class="fields">
+          <label><span class="cap" data-i="lBank">Bank (balance)</span><input id="c_bank" type="number" value="1000" min="0"></label>
+          <label><span class="cap" data-i="lRisk">Risk per trade, %</span><input id="c_risk" type="number" value="3" step="0.5" min="0.1"></label>
+          <label><span class="cap" data-i="lGoal">Daily goal, %</span><input id="c_goal" type="number" value="10" min="0"></label>
+          <label><span class="cap" data-i="lStop">Daily loss limit, %</span><input id="c_stop" type="number" value="10" min="0"></label>
+          <label class="full"><span class="cap" data-i="lMode">Trade type</span><select id="c_mode"><option value="binary" data-i="oBinary">Fixed payout (options)</option><option value="pnl" data-i="oPnl">P&amp;L amount (forex / futures / crypto / stocks)</option></select></label>
+          <label id="payoutWrap"><span class="cap" data-i="lPayout">Payout, %</span><input id="c_payout" type="number" value="80" min="1"></label>
+        </div>
       </div>
       <div class="res">
-        <div data-i="rStake" style="color:var(--mute);font-size:13px">Stake per trade</div>
-        <div class="big" id="r_stake">$30</div>
-        <div class="row"><span data-i="rWin">Win adds</span><b class="pos" id="r_win">+$24</b></div>
-        <div class="row"><span data-i="rLoss">Loss takes</span><b class="neg" id="r_loss">−$30</b></div>
-        <div class="row"><span data-i="rGoal">Daily goal</span><b id="r_goal">+$100</b></div>
-        <div class="row"><span data-i="rStop">Daily loss limit</span><b id="r_stop">−$100</b></div>
-        <div class="row"><span data-i="rLossesLeft">Losses you can afford today</span><b id="r_ll">3</b></div>
-        <div class="row"><span data-i="rWinsToGoal">Wins to reach the goal</span><b id="r_wg">5</b></div>
-        <div class="note" data-i="cNote">The extension keeps these numbers live as you log trades and stops you at the limit.</div>
+        <div class="cap" data-i="rStake">Stake per trade</div>
+        <div class="display big" id="r_stake">$30</div>
+        <div class="rows">
+          <div class="r"><span data-i="rWin">Win adds</span><b id="r_win">+$24</b></div>
+          <div class="r"><span data-i="rLoss">Loss takes</span><b id="r_loss">−$30</b></div>
+          <div class="r"><span data-i="rGoal">Daily goal / loss limit</span><b><span id="r_goal">+$100</span> / <span id="r_stop">−$100</span></b></div>
+          <div class="r"><span data-i="rLossesLeft">Losses you can afford today</span><b id="r_ll">3</b></div>
+          <div class="r"><span data-i="rWinsToGoal">Wins to reach the goal</span><b id="r_wg">5</b></div>
+        </div>
+        <div class="foot" data-i="cNote">The extension keeps these numbers live as you log trades — and stops you at the limit.</div>
       </div>
     </div>
   </section>
 
-  <section id="prop">
-    <h2 data-i="ppH">Built for prop firm challenges</h2>
-    <p class="h2sub" data-i="ppP">Most challenges are not lost to the market. They are lost to one bad day that breaks the daily loss rule — and the fee is gone. The extension puts a STOP on the screen before you get there.</p>
-    <div class="grid3">
-      <div class="card"><span class="num">1</span><h3 data-i="pp1h">Copy the firm’s rule</h3><p data-i="pp1p">FTMO, for example, allows a maximum daily loss of 5% of the initial capital. Set your daily loss limit in the extension to 4% — one percent of safety.</p></div>
-      <div class="card"><span class="num">2</span><h3 data-i="pp2h">Log every trade</h3><p data-i="pp2p">One click per trade on the platform page. The extension counts how many losses you can still afford today at your stake.</p></div>
-      <div class="card"><span class="num">3</span><h3 data-i="pp3h">Get stopped before the firm stops you</h3><p data-i="pp3p">Hit your limit — the STOP screen covers the platform. Your challenge survives to tomorrow. Note: firms count open positions too, so keep that extra percent.</p></div>
+  <section>
+    <div class="two">
+      <div class="jmock" aria-hidden="true">
+        <div class="tiles">
+          <div class="tile"><div class="cap" data-i="jDays">Days</div><div class="display v">23</div></div>
+          <div class="tile"><div class="cap" data-i="jProfit">Profit days</div><div class="display v pos">16</div></div>
+          <div class="tile"><div class="cap" data-i="jLossD">Loss days</div><div class="display v neg">7</div></div>
+          <div class="tile"><div class="cap" data-i="jWr">Win rate</div><div class="display v">61%</div></div>
+        </div>
+        <div class="tbl">
+          <div class="hd cap"><span data-i="jDate">Date</span><span data-i="jTr">Trades</span><span data-i="jRes">Result</span><span data-i="jSt">Status</span></div>
+          <div><span>2026-09-16</span><span>6</span><span class="pos">+$104</span><span data-i="jGoal">Goal</span></div>
+          <div><span>2026-09-15</span><span>7</span><span class="neg">−$96</span><span data-i="jStop">Stop</span></div>
+          <div><span>2026-09-14</span><span>4</span><span class="pos">+$72</span><span>—</span></div>
+          <div><span>2026-09-13</span><span>10</span><span class="pos">+$18</span><span style="color:var(--acc)" data-i="jOver">Overridden</span></div>
+        </div>
+      </div>
+      <div class="txt">
+        <h2 class="display" data-i="jH">Journal &amp; stats</h2>
+        <p data-i="jP1">Every trade with time, stake, result and a note. Profit days vs loss days, win rate, per-day P&amp;L. Export to CSV. Balance carries over automatically.</p>
+        <p data-i="jP2">The STOP screen can be overridden by holding a button for three seconds — and that day gets marked, so you see exactly how often you broke your own rule.</p>
+      </div>
     </div>
-    <h3 style="margin-top:26px" data-i="ppRulesH">Daily loss rules of popular firms</h3>
-    <p class="h2sub" data-i="ppRulesP">Rules change — always check the firm’s own page before you set your limit.</p>
-    <div class="grid3" id="firms">
-      <div class="card"><h3>FTMO</h3><p data-i="fFtmo">Max daily loss 5% of initial capital, counted on equity (open positions included), resets at midnight CE(S)T.</p><p style="margin-top:8px"><a href="https://ftmo.com/en/trading-objectives/" target="_blank" rel="noopener" data-i="fRules">Official rules →</a></p></div>
-      <div class="card"><h3>Topstep</h3><p data-i="fTopstep">Daily loss limit in dollars, depends on account size; breaching it ends the day (or the account, depending on the plan).</p><p style="margin-top:8px"><a href="https://www.topstep.com/blog/the-value-of-setting-a-daily-loss-limit" target="_blank" rel="noopener" data-i="fRules2">Official rules →</a></p></div>
-      <div class="card"><h3>FundedNext</h3><p data-i="fFn">Daily loss limit as a percentage of the account, counted on balance or equity depending on the plan.</p><p style="margin-top:8px"><a href="https://fundednext.com/cfds-glossary/daily-loss-limit" target="_blank" rel="noopener" data-i="fRules3">Official rules →</a></p></div>
-    </div>
-    <p class="note" data-i="ppNote">The extension is not affiliated with any prop firm and does not connect to their platforms. It is a discipline tool that runs in your browser.</p>
   </section>
 
-  <section class="two">
-    <div>
-      <h2 data-i="whoH">Who it's for</h2>
-      <p class="h2sub" data-i="whoP">Day traders and scalpers. Prop-firm challenge traders with strict daily loss rules. Options traders. Anyone who has ever said "just one more trade".</p>
-      <h2 data-i="privH">Private by design</h2>
-      <p class="h2sub" data-i="privP">No sign-up, no servers, no analytics. The extension only gets access to the sites you enable it on. Read the <a href="privacy.html" data-i="privLink">privacy policy</a>.</p>
-      <a class="cta" href="https://chromewebstore.google.com/detail/eacbknfhlpipmahkgfplifnjcegjmchg" target="_blank" rel="noopener"><span data-i="cta2">Add to Chrome — it's free</span></a>
+  <section>
+    <div class="who">
+      <div><div class="cap acc" data-i="whoH">Who it’s for</div><p data-i="whoP">Prop-firm challenge traders. Day traders and scalpers. Options traders. Anyone who has ever said “just one more trade”.</p></div>
+      <div><div class="cap acc" data-i="modesH">Two modes</div><p data-i="modesP">Fixed payout (options) or P&amp;L amount (forex, futures, crypto, stocks). English and Russian.</p></div>
+      <div><div class="cap acc" data-i="privH">Private by design</div><p data-i="privP">No sign-up, no servers, no analytics. The extension only gets access to the sites you enable it on. Read the <a href="privacy.html">privacy policy</a>.</p></div>
     </div>
-    <img class="shot" src="img/shot3-popup.png" alt="Extension settings">
   </section>
 
-  <section class="faq">
-    <h2 data-i="faqH">FAQ</h2>
-    <details><summary data-i="q1">Does it work with my broker?</summary><p data-i="a1">Yes — with any web platform. You enable the panel on a site with one click; the extension does not need to know your broker. Automatic trade detection for popular platforms is coming later.</p></details>
-    <details><summary data-i="q2">Can I turn the STOP off?</summary><p data-i="a2">You can hold a button for three seconds to override it. We don't recommend it, and the day is marked as "overridden" in your history. A lock you can't override is planned.</p></details>
-    <details><summary data-i="q3">Is it really free?</summary><p data-i="a3">Yes, everything in the extension today is free with no limits. Paid extras (auto-detection, weekly stats, sync) may come later; the core will stay free.</p></details>
-    <details><summary data-i="q5">Does it work for FTMO / Topstep / FundedNext challenges?</summary><p data-i="a5">Yes — it works on any web platform, including the ones prop firms use. Set your daily loss limit a little below the firm’s rule (the firm also counts open positions), log each trade, and the STOP screen will stop you before the rule does.</p></details>
-    <details><summary data-i="q4">Where is my data?</summary><p data-i="a4">Only in your browser (chrome.storage.local). Nothing is sent anywhere. You can export to CSV or delete everything from the History page.</p></details>
+  <section id="faq">
+    <div class="faq">
+      <h2 class="display" data-i="faqH">Questions</h2>
+      <div>
+        <details><summary data-i="q5">Does it work for FTMO / Topstep / FundedNext challenges?</summary><p data-i="a5">Yes — on any web platform, including the ones prop firms use. Set your limit a little below the firm’s rule (the firm also counts open positions), log each trade, and the STOP screen stops you before the rule does.</p></details>
+        <details><summary data-i="q1">Does it work with my broker?</summary><p data-i="a1">Yes — with any web platform. You enable the panel on a site with one click; the extension does not need to know your broker. Automatic trade detection for popular platforms is coming later.</p></details>
+        <details><summary data-i="q2">Can I turn the STOP off?</summary><p data-i="a2">You can hold a button for three seconds to override it. We don’t recommend it, and the day is marked as “overridden” in your history. A lock you can’t override is planned.</p></details>
+        <details><summary data-i="q3">Is it really free?</summary><p data-i="a3">Yes, everything in the extension today is free with no limits. Paid extras (auto-detection, weekly stats, sync) may come later; the core will stay free.</p></details>
+        <details><summary data-i="q4">Where is my data?</summary><p data-i="a4">Only in your browser (chrome.storage.local). Nothing is sent anywhere. You can export to CSV or delete everything from the History page.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <h2 class="display" data-i="finH">Tomorrow is<br><span>a new day.</span></h2>
+    <a class="cta" href="https://chromewebstore.google.com/detail/eacbknfhlpipmahkgfplifnjcegjmchg" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5h8.2M6.7 15.4l4.1-7.1M9.9 18.9l4.1-7.1"/></svg>
+      <span data-i="cta2">Add to Chrome — free</span>
+    </a>
+    <span class="cap" data-i="fDisc">Not financial advice. A discipline and record-keeping tool.</span>
   </section>
 
   <footer>
     <span>© 2026 Trading Journal &amp; Daily Loss Limit</span>
-    <a href="privacy.html" data-i="fPriv">Privacy policy</a>
-    <a href="mailto:nickyredliss@gmail.com" data-i="fContact">Contact</a>
-    <span data-i="fDisc">Not financial advice. A discipline and record-keeping tool.</span>
+    <div class="l"><a href="privacy.html" data-i="fPriv">Privacy policy</a><a href="mailto:nickyredliss@gmail.com" data-i="fContact">Contact</a><a href="https://chromewebstore.google.com/detail/eacbknfhlpipmahkgfplifnjcegjmchg" target="_blank" rel="noopener">Chrome Web Store</a></div>
   </footer>
 </div>
 
 <script>
-const T = {
-  ru: {
-    brand: 'Дневник сделок и дневной лимит',
-    h1: 'Поставь дневной лимит убытка.<br>Отмечай сделки одним кликом.<br>Остановись вовремя.',
-    lead: 'Бесплатное расширение для Chrome: ведёт дневник сделок и заставляет соблюдать твои же правила — цель дня, стоп дня, лимит сделок — экраном СТОП прямо поверх страницы брокера. Сделано для челленджей проп-фирм и для всех, кто хоть раз говорил «ещё одну сделку».',
-    cta: 'Добавить в Chrome — бесплатно', cta2: 'Добавить в Chrome — бесплатно',
-    sub: 'Без регистрации. Без серверов. Дневник хранится в твоём браузере.',
-    whyH: 'Трейдеры сливают не рынку. Они сливают одному плохому дню.',
-    whyP: 'Серия минусов, которую хочется отыграть. Серия плюсов, которая превращается в азарт. Лечится не стратегией, а правилами, которые нельзя себе переуговорить.',
-    s1h: 'Задай правила один раз', s1p: 'Банк, цель дня, стоп дня, максимум сделок, риск на сделку. Режим фиксированной выплаты или суммы результата.',
-    s2h: 'Отмечай сделки одним кликом', s2p: '«+ Плюс / − Минус» прямо на странице брокера. Расширение считает размер следующей сделки и сколько минусов осталось до стопа.',
-    s3h: 'Остановись, когда день закончен', s3p: 'Цель, стоп или лимит сделок — экран СТОП закрывает брокера. Закрой вкладку. Возвращайся завтра.',
-    stopH: 'Экран СТОП', stopP: 'Когда достигнута цель или стоп, страница брокера закрывается и кнопок нет. Снять можно, удерживая кнопку три секунды, — и этот день помечается в истории, чтобы ты видел, как часто нарушаешь своё правило.',
-    jH: 'Дневник и статистика', jP: 'Каждая сделка со временем, ставкой, результатом и заметкой. Дни в плюсе и в минусе, доля плюсов, итог по дням. Выгрузка в CSV. Баланс переносится сам.',
-    cH: 'Калькулятор размера сделки и дневного лимита', cP: 'Бесплатно, работает и без расширения. Введи банк и правила — получишь ставку, сколько минусов можно позволить сегодня и сколько плюсов нужно до цели.',
-    lBank: 'Банк (баланс)', lRisk: 'Риск на сделку, %', lGoal: 'Цель дня, %', lStop: 'Стоп дня, %', lMode: 'Тип сделок', oBinary: 'Фиксированная выплата (опционы)', oPnl: 'Сумма результата (форекс / крипта / акции)', lPayout: 'Выплата, %',
-    rStake: 'Ставка на сделку', rWin: 'Плюс даёт', rLoss: 'Минус забирает', rGoal: 'Цель дня', rStop: 'Стоп дня', rLossesLeft: 'Минусов можно позволить сегодня', rWinsToGoal: 'Плюсов до цели',
-    cNote: 'Расширение считает это вживую по мере сделок и останавливает на лимите.',
-    whoH: 'Для кого', whoP: 'Дейтрейдеры и скальперы. Участники челленджей проп-фирм со строгим дневным лимитом. Опционщики. Все, кто хоть раз говорил «ещё одну сделку».',
-    privH: 'Приватность по умолчанию', privP: 'Без регистрации, серверов и аналитики. Расширение получает доступ только к тем сайтам, где ты его включил. Читай <a href="privacy.html">политику конфиденциальности</a>.',
-    faqH: 'Вопросы', q1: 'Работает с моим брокером?', a1: 'Да — с любой веб-платформой. Панель включается на сайте одним кликом; расширению не нужно знать твоего брокера. Автоопределение сделок для популярных платформ — позже.',
-    q2: 'Можно выключить СТОП?', a2: 'Можно, удерживая кнопку три секунды. Не рекомендуем, и день помечается в истории как «лимит снят». Замок без снятия — в планах.',
-    q3: 'Правда бесплатно?', a3: 'Да, всё, что есть сейчас, бесплатно и без лимитов. Платные дополнения (автоопределение, недельная статистика, синхронизация) возможны позже; ядро останется бесплатным.',
-    q4: 'Где мои данные?', a4: 'Только в твоём браузере. Ничего никуда не отправляется. Можно выгрузить в CSV или удалить всё на странице истории.',
-    ppH: 'Сделано для челленджей проп-фирм', ppP: 'Большинство челленджей сливают не рынку. Их сливают одному плохому дню, который нарушает правило дневного убытка, — и деньги за экзамен сгорают. Расширение ставит СТОП на экран раньше.',
-    pp1h: 'Скопируй правило фирмы', pp1p: 'Например, FTMO разрешает дневной убыток не больше 5% от стартового капитала. Поставь в расширении стоп дня 4% — один процент запаса.',
-    pp2h: 'Отмечай каждую сделку', pp2p: 'Один клик на сделку прямо на странице платформы. Расширение считает, сколько минусов ещё можно позволить сегодня при твоей ставке.',
-    pp3h: 'Остановись раньше, чем остановит фирма', pp3p: 'Дошёл до лимита — экран СТОП закрывает платформу. Челлендж доживает до завтра. Помни: фирмы считают и открытые позиции, поэтому запас нужен.',
-    ppRulesH: 'Правила дневного убытка у популярных фирм', ppRulesP: 'Правила меняются — всегда проверяй на странице фирмы, прежде чем ставить лимит.',
-    fFtmo: 'Дневной убыток не больше 5% от стартового капитала, считается по эквити (с открытыми позициями), обнуляется в полночь по CE(S)T.', fRules: 'Официальные правила →', fRules2: 'Официальные правила →', fRules3: 'Официальные правила →',
-    fTopstep: 'Дневной лимит убытка в долларах, зависит от размера счёта; нарушение закрывает день (или счёт — зависит от тарифа).',
-    fFn: 'Дневной лимит убытка в процентах от счёта, считается по балансу или эквити в зависимости от тарифа.',
-    ppNote: 'Расширение не связано ни с одной проп-фирмой и не подключается к их платформам. Это инструмент дисциплины, который работает у тебя в браузере.',
-    q5: 'Подходит для челленджей FTMO / Topstep / FundedNext?', a5: 'Да — работает на любой веб-платформе, включая те, что используют проп-фирмы. Поставь стоп дня чуть ниже правила фирмы (фирма считает и открытые позиции), отмечай сделки, и экран СТОП остановит тебя раньше, чем правило.',
-    fPriv: 'Политика конфиденциальности', fContact: 'Связаться', fDisc: 'Не финансовый совет. Инструмент дисциплины и учёта.',
-  }
-};
-const EN = {};
-document.querySelectorAll('[data-i]').forEach(el => { EN[el.dataset.i] = el.innerHTML; });
+const T = { ru: {
+  brand: 'Дневник сделок и дневной лимит', nProp: 'Проп-фирмы', nCalc: 'Калькулятор', nAdd: 'Добавить в Chrome',
+  h1: 'Знай, когда<br><span>хватит.</span>',
+  lead: 'Бесплатное расширение для Chrome: ведёт дневник сделок и заставляет соблюдать твои же правила — стоп дня, цель дня, лимит сделок — экраном СТОП прямо поверх страницы брокера. Сделано для челленджей проп-фирм.',
+  cta: 'Добавить в Chrome — бесплатно', cta2: 'Добавить в Chrome — бесплатно', ctaNote: 'Без регистрации · без серверов · RU / EN',
+  mStop: 'Стоп.', mStopS: 'На сегодня всё. Стоп дня достигнут. Завтра новый день.', mPnl: 'Итог', mTrades: 'Сделок', mBank: 'Банк', mClose: 'Закрыть вкладку', mHold: 'Держите 3 с, чтобы снять лимит (не рекомендуется)',
+  mToday: 'Сегодня', mTrades2: 'Сделок', mNext: 'Следующая', mWin: '+ Плюс', mLoss: '− Минус', mHint: '2 плюса до цели · 3 минуса до стопа',
+  st1: 'правило дневного убытка FTMO — один плохой день заканчивает челлендж', st2b: '1 клик', st2: 'на сделку, прямо на странице платформы', st3b: '0 байт', st3: 'наружу — дневник хранится в твоём браузере', st4b: 'Любой брокер', st4: 'работает на любой веб-платформе, включая проп-фирмы',
+  ppH: 'Челленджи сливают не рынку.<br><span>Их сливают одному дню.</span>',
+  ppP: 'У каждой проп-фирмы есть правило дневного убытка. Нарушил на доллар — счёт и взнос сгорели. Поставь тот же лимит в расширении, на пункт ниже, чем у фирмы, — и экран СТОП закроет платформу раньше правила.',
+  step1: 'Шаг 1', step2: 'Шаг 2', step3: 'Шаг 3',
+  pp1h: 'Скопируй правило фирмы', pp1p: 'FTMO разрешает дневной убыток 5%. Поставь в расширении 4% — один пункт запаса, потому что фирмы считают и открытые позиции.',
+  pp2h: 'Отмечай каждую сделку', pp2p: '«+ Плюс / − Минус» на плавающей панели. Она считает, сколько минусов ещё можно позволить сегодня при твоей ставке.',
+  pp3h: 'Остановись первым', pp3p: 'Лимит достигнут — СТОП закрывает платформу, кнопок нет. Челлендж доживает до завтра.',
+  fFtmo: 'Дневной убыток не больше 5% от стартового капитала, считается по эквити (с открытыми позициями), обнуляется в полночь по CE(S)T.', fRules: 'Официальные правила →', fRules2: 'Официальные правила →', fRules3: 'Официальные правила →',
+  fTopstep: 'Дневной лимит убытка в долларах, зависит от размера счёта; нарушение закрывает день или счёт — зависит от тарифа.',
+  fFn: 'Дневной лимит убытка в процентах от счёта, по балансу или эквити в зависимости от тарифа.',
+  ppNote: 'Правила меняются — проверяй на странице фирмы, прежде чем ставить лимит. Не связано ни с одной проп-фирмой.',
+  cE: 'Бесплатно · работает без расширения', cH: 'Размер сделки и дневной лимит', cP: 'Введи банк и правила — получишь ставку, сколько минусов можно позволить сегодня и сколько плюсов нужно до цели.',
+  lBank: 'Банк (баланс)', lRisk: 'Риск на сделку, %', lGoal: 'Цель дня, %', lStop: 'Стоп дня, %', lMode: 'Тип сделок', oBinary: 'Фиксированная выплата (опционы)', oPnl: 'Сумма результата (форекс / фьючерсы / крипта / акции)', lPayout: 'Выплата, %',
+  rStake: 'Ставка на сделку', rWin: 'Плюс даёт', rLoss: 'Минус забирает', rGoal: 'Цель дня / стоп дня', rLossesLeft: 'Минусов можно позволить сегодня', rWinsToGoal: 'Плюсов до цели',
+  cNote: 'Расширение считает это вживую по мере сделок — и останавливает на лимите.',
+  jDays: 'Дней', jProfit: 'Дней в плюсе', jLossD: 'Дней в минусе', jWr: 'Доля плюсов', jDate: 'Дата', jTr: 'Сделок', jRes: 'Результат', jSt: 'Статус', jGoal: 'Цель', jStop: 'Стоп', jOver: 'Лимит снят',
+  jH: 'Дневник и статистика', jP1: 'Каждая сделка со временем, ставкой, результатом и заметкой. Дни в плюсе и в минусе, доля плюсов, итог по дням. Выгрузка в CSV. Баланс переносится сам.',
+  jP2: 'Экран СТОП можно снять, удерживая кнопку три секунды, — и этот день помечается, чтобы ты видел, как часто нарушаешь своё правило.',
+  whoH: 'Для кого', whoP: 'Участники челленджей проп-фирм. Дейтрейдеры и скальперы. Опционщики. Все, кто хоть раз говорил «ещё одну сделку».',
+  modesH: 'Два режима', modesP: 'Фиксированная выплата (опционы) или сумма результата (форекс, фьючерсы, крипта, акции). Русский и английский.',
+  privH: 'Приватность по умолчанию', privP: 'Без регистрации, серверов и аналитики. Расширение получает доступ только к тем сайтам, где ты его включил. Читай <a href="privacy.html">политику конфиденциальности</a>.',
+  faqH: 'Вопросы',
+  q5: 'Подходит для челленджей FTMO / Topstep / FundedNext?', a5: 'Да — на любой веб-платформе, включая те, что используют проп-фирмы. Поставь лимит чуть ниже правила фирмы (фирма считает и открытые позиции), отмечай сделки, и экран СТОП остановит тебя раньше правила.',
+  q1: 'Работает с моим брокером?', a1: 'Да — с любой веб-платформой. Панель включается на сайте одним кликом; расширению не нужно знать твоего брокера. Автоопределение сделок для популярных платформ — позже.',
+  q2: 'Можно выключить СТОП?', a2: 'Можно, удерживая кнопку три секунды. Не рекомендуем, и день помечается в истории как «лимит снят». Замок без снятия — в планах.',
+  q3: 'Правда бесплатно?', a3: 'Да, всё, что есть сейчас, бесплатно и без лимитов. Платные дополнения (автоопределение, недельная статистика, синхронизация) возможны позже; ядро останется бесплатным.',
+  q4: 'Где мои данные?', a4: 'Только в твоём браузере. Ничего никуда не отправляется. Можно выгрузить в CSV или удалить всё на странице истории.',
+  finH: 'Завтра —<br><span>новый день.</span>', fDisc: 'Не финансовый совет. Инструмент дисциплины и учёта.',
+  fPriv: 'Политика конфиденциальности', fContact: 'Связаться',
+} };
+const EN = {}; document.querySelectorAll('[data-i]').forEach(el => { EN[el.dataset.i] = el.innerHTML; });
 function setLang(l) {
   document.querySelectorAll('[data-i]').forEach(el => { const k = el.dataset.i; el.innerHTML = (l === 'ru' && T.ru[k]) ? T.ru[k] : EN[k]; });
   document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
@@ -221,14 +359,13 @@ document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click
 let pref = 'en'; try { pref = localStorage.getItem('tj-lang') || ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en'); } catch (_) {}
 if (pref === 'ru') setLang('ru');
 
-// Calculator
 const $ = id => document.getElementById(id);
 const r2 = n => Math.round(n * 100) / 100;
 const money = n => (n < 0 ? '−' : n > 0 ? '+' : '') + '$' + Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 2 });
 function calc() {
   const bank = +$('c_bank').value || 0, risk = +$('c_risk').value || 0, goal = +$('c_goal').value || 0, stop = +$('c_stop').value || 0;
   const binary = $('c_mode').value === 'binary'; const payout = +$('c_payout').value || 0;
-  $('payoutWrap').style.display = binary ? '' : 'none';
+  $('payoutWrap').style.visibility = binary ? '' : 'hidden';
   const stake = r2(bank * risk / 100), win = binary ? r2(stake * payout / 100) : stake;
   const goalAmt = r2(bank * goal / 100), stopAmt = r2(bank * stop / 100);
   $('r_stake').textContent = money(stake).replace('+', '');
