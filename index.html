@@ -82,6 +82,7 @@
   .firm { padding:22px 26px; background:var(--panel); border-radius:6px; display:flex; flex-direction:column; gap:8px; }
   .firm .n { font-size:28px; } .firm p { margin:0; font-size:14px; line-height:1.5; color:var(--mute); }
   .firm a { font-size:13px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; }
+  .firm a.firmcta { display:inline-block; padding:10px 14px; border-radius:4px; background:var(--acc); color:var(--accink); }
   .note { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); font-weight:600; margin-top:28px; }
   /* calculator */
   .calc { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:64px; align-items:center; }
@@ -212,11 +213,11 @@
       <div class="box"><div class="cap acc" data-i="step3">Step 3</div><div class="h" data-i="pp3h">Get stopped first</div><p data-i="pp3p">Limit hit — STOP covers the platform, the buttons are gone. Your challenge survives to tomorrow.</p></div>
     </div>
     <div class="g3" id="firms">
-      <div class="firm"><div class="display n">FTMO</div><p data-i="fFtmo">Max daily loss 5% of initial capital, counted on equity (open positions included), resets at midnight CE(S)T.</p><a href="https://ftmo.com/en/trading-objectives/" target="_blank" rel="noopener" data-i="fRules">Official rules →</a></div>
+      <div class="firm"><div class="display n">FTMO</div><p data-i="fFtmo">Max daily loss 5% of initial capital, counted on equity (open positions included), resets at midnight CE(S)T.</p><div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center"><a href="https://join.ftmo.com/rHdPeVVcnhqSQghInGjo" target="_blank" rel="noopener sponsored" class="firmcta" data-i="fStart">Start a challenge →</a><a href="https://ftmo.com/en/trading-objectives/" target="_blank" rel="noopener" data-i="fRules" style="color:var(--mute)">Official rules</a></div></div>
       <div class="firm"><div class="display n">Topstep</div><p data-i="fTopstep">Daily loss limit in dollars, depends on account size; breaching it ends the day or the account, depending on the plan.</p><a href="https://www.topstep.com/blog/the-value-of-setting-a-daily-loss-limit" target="_blank" rel="noopener" data-i="fRules2">Official rules →</a></div>
       <div class="firm"><div class="display n">FundedNext</div><p data-i="fFn">Daily loss limit as a percentage of the account, on balance or equity depending on the plan.</p><a href="https://fundednext.com/cfds-glossary/daily-loss-limit" target="_blank" rel="noopener" data-i="fRules3">Official rules →</a></div>
     </div>
-    <div class="note" data-i="ppNote">Rules change — check the firm’s page before you set your limit. Not affiliated with any prop firm.</div>
+    <div class="note" data-i="ppNote">Rules change — check the firm’s page before you set your limit. Some links are partner links: we may earn a commission, your price doesn’t change.</div>
   </section>
 
   <section id="calculator">
@@ -325,10 +326,10 @@ const T = { ru: {
   pp1h: 'Скопируй правило фирмы', pp1p: 'FTMO разрешает дневной убыток 5%. Поставь в расширении 4% — один пункт запаса, потому что фирмы считают и открытые позиции.',
   pp2h: 'Отмечай каждую сделку', pp2p: '«+ Плюс / − Минус» на плавающей панели. Она считает, сколько минусов ещё можно позволить сегодня при твоей ставке.',
   pp3h: 'Остановись первым', pp3p: 'Лимит достигнут — СТОП закрывает платформу, кнопок нет. Челлендж доживает до завтра.',
-  fFtmo: 'Дневной убыток не больше 5% от стартового капитала, считается по эквити (с открытыми позициями), обнуляется в полночь по CE(S)T.', fRules: 'Официальные правила →', fRules2: 'Официальные правила →', fRules3: 'Официальные правила →',
+  fFtmo: 'Дневной убыток не больше 5% от стартового капитала, считается по эквити (с открытыми позициями), обнуляется в полночь по CE(S)T.', fStart: 'Начать челлендж →', fRules: 'Официальные правила', fRules2: 'Официальные правила →', fRules3: 'Официальные правила →',
   fTopstep: 'Дневной лимит убытка в долларах, зависит от размера счёта; нарушение закрывает день или счёт — зависит от тарифа.',
   fFn: 'Дневной лимит убытка в процентах от счёта, по балансу или эквити в зависимости от тарифа.',
-  ppNote: 'Правила меняются — проверяй на странице фирмы, прежде чем ставить лимит. Не связано ни с одной проп-фирмой.',
+  ppNote: 'Правила меняются — проверяй на странице фирмы, прежде чем ставить лимит. Часть ссылок партнёрские: мы можем получить комиссию, твоя цена не меняется.',
   cE: 'Бесплатно · работает без расширения', cH: 'Размер сделки и дневной лимит', cP: 'Введи банк и правила — получишь ставку, сколько минусов можно позволить сегодня и сколько плюсов нужно до цели.',
   lBank: 'Банк (баланс)', lRisk: 'Риск на сделку, %', lGoal: 'Цель дня, %', lStop: 'Стоп дня, %', lMode: 'Тип сделок', oBinary: 'Фиксированная выплата (опционы)', oPnl: 'Сумма результата (форекс / фьючерсы / крипта / акции)', lPayout: 'Выплата, %',
   rStake: 'Ставка на сделку', rWin: 'Плюс даёт', rLoss: 'Минус забирает', rGoal: 'Цель дня / стоп дня', rLossesLeft: 'Минусов можно позволить сегодня', rWinsToGoal: 'Плюсов до цели',
